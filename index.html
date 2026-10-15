@@ -1,209 +1,412 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bijla Grocery - Daily Essentials & Quick Delivery</title>
+  <style>
+    :root {
+      --primary: #15803d;
+      --primary-dark: #166534;
+      --secondary: #f97316;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --danger: #dc2626;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; }
+    
+    /* Top Announcement Bar */
+    .top-bar {
+      background: #1e293b;
+      color: #fff;
+      text-align: center;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .top-bar span { color: #facc15; font-weight: bold; }
 
-    <title>BijLa Pradip Grocery | Grocery Store in Topsia, Kolkata</title>
+    /* Header */
+    header {
+      background: #ffffff;
+      padding: 12px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .header-content {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .brand-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .brand-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .search-box {
+      width: 100%;
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+    }
 
-    <meta name="description" content="BijLa Pradip Grocery - Your local grocery store in Topsia, Kolkata. Order groceries on WhatsApp or visit our shop.">
+    /* Category Filter Tabs */
+    .cat-nav {
+      max-width: 900px;
+      margin: 12px auto;
+      padding: 0 16px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .cat-nav::-webkit-scrollbar { display: none; }
+    .cat-btn {
+      background: #fff;
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      white-space: nowrap;
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .cat-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    /* Main Container */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
 
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            background: #f5f7f5;
-            color: #222;
-        }
+    /* Product Grid */
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 16px 0 10px;
+      color: #0f172a;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    .product-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: transform 0.15s ease;
+    }
+    .product-card:active {
+      transform: scale(0.98);
+    }
+    .badge-save {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: #dcfce7;
+      color: var(--primary-dark);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .prod-icon {
+      font-size: 32px;
+      text-align: center;
+      margin: 10px 0 6px;
+    }
+    .prod-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0f172a;
+      line-height: 1.3;
+      min-height: 34px;
+    }
+    .prod-unit {
+      font-size: 11px;
+      color: var(--muted);
+      margin: 2px 0 6px;
+    }
+    .price-box {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .our-price {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .mrp-price {
+      font-size: 12px;
+      color: #94a3b8;
+      text-decoration: line-through;
+    }
 
-        header {
-            background: #168a45;
-            color: white;
-            text-align: center;
-            padding: 30px 15px;
-        }
+    /* Action Buttons (+ / -) */
+    .btn-action-wrap {
+      margin-top: auto;
+    }
+    .btn-add {
+      width: 100%;
+      background: #fff;
+      color: var(--primary);
+      border: 1.5px solid var(--primary);
+      padding: 6px 0;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-add:hover {
+      background: #f0fdf4;
+    }
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--primary);
+      border-radius: 6px;
+      color: #fff;
+      font-weight: 700;
+      padding: 2px 6px;
+    }
+    .qty-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+    }
+    .qty-num {
+      font-size: 13px;
+    }
 
-        header h1 {
-            font-size: 30px;
-            margin-bottom: 8px;
-        }
-
-        header p {
-            font-size: 16px;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: auto;
-            padding: 20px;
-        }
-
-        .card {
-            background: white;
-            margin: 18px 0;
-            padding: 22px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-        }
-
-        h2 {
-            color: #168a45;
-            margin-bottom: 12px;
-        }
-
-        .buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 15px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 18px;
-            border-radius: 8px;
-            text-decoration: none;
-            color: white;
-            font-weight: bold;
-        }
-
-        .whatsapp {
-            background: #25D366;
-        }
-
-        .maps {
-            background: #4285F4;
-        }
-
-        .call {
-            background: #333;
-        }
-
-        ul {
-            padding-left: 20px;
-        }
-
-        footer {
-            background: #168a45;
-            color: white;
-            text-align: center;
-            padding: 18px;
-            margin-top: 20px;
-        }
-
-        .highlight {
-            font-weight: bold;
-        }
-
-        @media (max-width: 600px) {
-            header h1 {
-                font-size: 25px;
-            }
-
-            .btn {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
+    /* Fixed Bottom Cart Bar */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      padding: 10px 16px;
+      z-index: 1000;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+    }
+    .bottom-content {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cart-summary {
+      display: flex;
+      flex-direction: column;
+    }
+    .cart-total {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .delivery-status {
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .delivery-free { color: var(--primary); }
+    .delivery-charge { color: var(--danger); }
+    .btn-checkout {
+      background: #25d366;
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-checkout:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
-
 <body>
 
-<header>
-    <h1>🛒 BijLa Pradip Grocery</h1>
-    <p>Your Local Grocery Store in Topsia, Kolkata</p>
-</header>
+  <!-- Announcement Bar -->
+  <div class="top-bar">
+    🚚 <b>Minimum Order:</b> ₹199 for <span>FREE Home Delivery</span> (Below ₹199: ₹20 charge)
+  </div>
 
-<div class="container">
-
-    <div class="card">
-        <h2>Welcome 👋</h2>
-        <p>
-            Welcome to <span class="highlight">BijLa Pradip Grocery</span>.
-            We provide everyday grocery and household essentials for your daily needs.
-        </p>
-
-        <div class="buttons">
-            <a class="btn whatsapp"
-               href="https://wa.me/917439117627?text=Hello%20BijLa%20Pradip%20Grocery,%20I%20want%20to%20place%20an%20order."
-               target="_blank">
-                💬 Order on WhatsApp
-            </a>
-
-            <a class="btn call"
-               href="tel:+917439117627">
-                📞 Call Us
-            </a>
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <div class="brand-row">
+        <div>
+          <div class="brand-title">🛒 BiJLA GROCERY</div>
+          <div class="brand-sub">Daily Fresh Essentials & Lowest Prices</div>
         </div>
-    </div>
-
-    <div class="card">
-        <h2>📍 Our Location</h2>
-
-        <p>
-            31/K, Raicharan Ghosh Lane,<br>
-            Block D, Topsia,<br>
-            Kolkata, West Bengal - 700039
-        </p>
-
-        <div class="buttons">
-            <a class="btn maps"
-               href="https://www.google.com/maps/search/?api=1&query=31K%20Raicharan%20Ghosh%20Lane%20Topsia%20Kolkata%20700039"
-               target="_blank">
-                📍 Open in Google Maps
-            </a>
+        <div style="font-size: 12px; font-weight: 600; color: #15803d; background: #dcfce7; padding: 4px 8px; border-radius: 6px;">
+          ⚡ 30 Mins Delivery
         </div>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search aata, dal, cookme, biscuits, diapers...">
+      </div>
     </div>
+  </header>
 
-    <div class="card">
-        <h2>🕘 Shop Timings</h2>
+  <!-- Category Filter -->
+  <div class="cat-nav">
+    <button class="cat-btn active" onclick="filterCategory('All')">Sabhi Items</button>
+    <button class="cat-btn" onclick="filterCategory('Atta, Suji & Besan')">Atta & Besan</button>
+    <button class="cat-btn" onclick="filterCategory('Dals & Chana')">Dals & Chana</button>
+    <button class="cat-btn" onclick="filterCategory('Spices')">Cookme & Masale</button>
+    <button class="cat-btn" onclick="filterCategory('Dairy & Bread')">Doodh & Bread</button>
+    <button class="cat-btn" onclick="filterCategory('Baby & Care')">Pampers & Soap</button>
+    <button class="cat-btn" onclick="filterCategory('Snacks')">Biscuits & Cold Drinks</button>
+  </div>
 
-        <p><span class="highlight">Open:</span> 9:30 AM – 11:30 PM</p>
-        <p><span class="highlight">Lunch Break:</span> 3:00 PM – 6:00 PM</p>
+  <!-- Products Container -->
+  <div class="container">
+    <div id="productGrid" class="grid"></div>
+  </div>
+
+  <!-- Floating Sticky Cart -->
+  <div class="bottom-bar">
+    <div class="bottom-content">
+      <div class="cart-summary">
+        <div class="cart-total" id="cartTotal">Cart: ₹0 (0 items)</div>
+        <div class="delivery-status delivery-charge" id="deliveryStatus">Add ₹199 for Free Delivery</div>
+      </div>
+      <button class="btn-checkout" id="orderBtn" onclick="checkoutWhatsApp()">
+        <span>Order on WhatsApp</span> 📲
+      </button>
     </div>
+  </div>
 
-    <div class="card">
-        <h2>🛍️ What We Offer</h2>
+  <script>
+    // Master Product Catalog
+    const products = [7439117627]
+      // Atta, Suji, Maida
+      { id: 1, name: "Loose Chakki Fresh Atta", unit: "1 kg", mrp: 55, price: 50, cat: "Atta, Suji & Besan", icon: "🌾", save: "₹5" },
+      { id: 2, name: "Loose Chakki Fresh Atta", unit: "5 kg", mrp: 260, price: 230, cat: "Atta, Suji & Besan", icon: "🌾", save: "₹30" },
+      { id: 3, name: "Loose Chakki Fresh Atta (Bumper)", unit: "10 kg", mrp: 520, price: 450, cat: "Atta, Suji & Besan", icon: "🌾", save: "₹70" },
+      { id: 4, name: "Loose Maida", unit: "1 kg", mrp: 55, price: 50, cat: "Atta, Suji & Besan", icon: "🌾", save: "₹5" },
+      { id: 5, name: "Loose Maida", unit: "5 kg", mrp: 260, price: 230, cat: "Atta, Suji & Besan", icon: "🌾", save: "₹30" },
+      { id: 6, name: "Loose Maida (Bulk)", unit: "10 kg", mrp: 520, price: 450, cat: "Atta, Suji & Besan", icon: "🌾", save: "₹70" },
+      { id: 7, name: "Ganesh Suji (200g)", unit: "Single Pack", mrp: 15, price: 14, cat: "Atta, Suji & Besan", icon: "🥣", save: "₹1" },
+      { id: 8, name: "Ganesh Suji (Pack of 10)", unit: "10 x 200g (2 kg)", mrp: 150, price: 130, cat: "Atta, Suji & Besan", icon: "🥣", save: "₹20" },
+      { id: 9, name: "Satyendra Besan (100g)", unit: "Single Pack", mrp: 18, price: 16, cat: "Atta, Suji & Besan", icon: "🥣", save: "₹2" },
+      { id: 10, name: "Satyendra Besan (Pack of 10)", unit: "10 x 100g (1 kg)", mrp: 180, price: 150, cat: "Atta, Suji & Besan", icon: "🥣", save: "₹30" },
+      { id: 11, name: "Sugar (Chini)", unit: "1 kg", mrp: 65, price: 60, cat: "Atta, Suji & Besan", icon: "🍚", save: "₹5" },
 
-        <ul>
-            <li>Daily grocery essentials</li>
-            <li>Household products</li>
-            <li>Convenient local shopping</li>
-            <li>WhatsApp order facility</li>
-            <li>Easy customer communication</li>
-        </ul>
-    </div>
+      // Dals & Chana
+      { id: 12, name: "Masoor Dal (Bada / Chota)", unit: "500 g", mrp: 55, price: 50, cat: "Dals & Chana", icon: "🥣", save: "₹5" },
+      { id: 13, name: "Masoor Dal (Bada / Chota)", unit: "1 kg", mrp: 110, price: 99, cat: "Dals & Chana", icon: "🥣", save: "₹11" },
+      { id: 14, name: "Masoor Dal (Saver)", unit: "2.5 kg", mrp: 270, price: 239, cat: "Dals & Chana", icon: "🥣", save: "₹31" },
+      { id: 15, name: "Chana (Kabuli / Kala)", unit: "500 g", mrp: 55, price: 50, cat: "Dals & Chana", icon: "🥣", save: "₹5" },
+      { id: 16, name: "Chana (Kabuli / Kala)", unit: "1 kg", mrp: 110, price: 99, cat: "Dals & Chana", icon: "🥣", save: "₹11" },
+      { id: 17, name: "Chana (Bulk Saver)", unit: "5 kg", mrp: 550, price: 480, cat: "Dals & Chana", icon: "🥣", save: "₹70" },
+      { id: 18, name: "Mung Dal", unit: "1 kg", mrp: 135, price: 120, cat: "Dals & Chana", icon: "🥣", save: "₹15" },
+      { id: 19, name: "Rahar (Toor) Dal", unit: "1 kg", mrp: 175, price: 160, cat: "Dals & Chana", icon: "🥣", save: "₹15" },
 
-    <div class="card">
-        <h2>💬 Order Easily</h2>
+      // Cookme Spices (50g packets with + add)
+      { id: 20, name: "Cookme Jeera Powder", unit: "50g Pack", mrp: 55, price: 50, cat: "Spices", icon: "🌶️", save: "₹5" },
+      { id: 21, name: "Cookme Lal Mirch Powder", unit: "50g Pack", mrp: 35, price: 30, cat: "Spices", icon: "🌶️", save: "₹5" },
+      { id: 22, name: "Cookme Dhaniya Powder", unit: "50g Pack", mrp: 30, price: 25, cat: "Spices", icon: "🌶️", save: "₹5" },
+      { id: 23, name: "Khada Golki (Black Pepper)", unit: "100 g", mrp: 100, price: 90, cat: "Spices", icon: "🌿", save: "₹10" },
+      { id: 24, name: "Khada Elaichi", unit: "100 g", mrp: 380, price: 350, cat: "Spices", icon: "🌿", save: "₹30" },
 
-        <p>
-            Need groceries? Send us your requirement directly on WhatsApp.
-            We will respond to your order and availability.
-        </p>
+      // Dairy & Bread & Veggies
+      { id: 25, name: "Amul Taaza Milk", unit: "500 ml Pouch", mrp: 31, price: 31, cat: "Dairy & Bread", icon: "🥛", save: "Fresh" },
+      { id: 26, name: "Amul Gold Milk", unit: "500 ml Pouch", mrp: 37, price: 37, cat: "Dairy & Bread", icon: "🥛", save: "Fresh" },
+      { id: 27, name: "Milky Bread", unit: "Half Pound", mrp: 26, price: 25, cat: "Dairy & Bread", icon: "🍞", save: "₹1" },
+      { id: 28, name: "Full Bread", unit: "Full Pound", mrp: 42, price: 40, cat: "Dairy & Bread", icon: "🍞", save: "₹2" },
+      { id: 29, name: "Potato (Aloo)", unit: "1 kg", mrp: 20, price: 16, cat: "Dairy & Bread", icon: "🥔", save: "₹4" },
+      { id: 30, name: "Onion (Pyaz)", unit: "1 kg", mrp: 70, price: 60, cat: "Dairy & Bread", icon: "🧅", save: "₹10" },
+      { id: 31, name: "Fresh Eggs", unit: "Crate (30 Eggs)", mrp: 240, price: 220, cat: "Dairy & Bread", icon: "🥚", save: "₹20" },
 
-        <div class="buttons">
-            <a class="btn whatsapp"
-               href="https://wa.me/917439117627?text=Hello%20BijLa%20Pradip%20Grocery,%20I%20want%20to%20order%20groceries."
-               target="_blank">
-                🛒 Start WhatsApp Order
-            </a>
-        </div>
-    </div>
+      // Baby & Shampoos
+      { id: 32, name: "Pampers Small (2 pcs)", unit: "1 Pack", mrp: 22, price: 20, cat: "Baby & Care", icon: "👶", save: "₹2" },
+      { id: 33, name: "Pampers Small (Pack of 30)", unit: "Box of 30 (60 Diapers)", mrp: 660, price: 580, cat: "Baby & Care", icon: "👶", save: "₹80" },
+      { id: 34, name: "Pampers Medium (1 Pack)", unit: "1 Pack", mrp: 28, price: 25, cat: "Baby & Care", icon: "👶", save: "₹3" },
+      { id: 35, name: "Pampers Medium (Pack of 30)", unit: "Box of 30 Packs", mrp: 840, price: 720, cat: "Baby & Care", icon: "👶", save: "₹120" },
+      { id: 36, name: "Pampers Large (1 Pack)", unit: "1 Pack", mrp: 38, price: 34, cat: "Baby & Care", icon: "👶", save: "₹4" },
+      { id: 37, name: "Pampers Large (Pack of 30)", unit: "Box of 30 Packs", mrp: 1020, price: 920, cat: "Baby & Care", icon: "👶", save: "₹100" },
+      { id: 38, name: "Dove Shampoo Sachet", unit: "1 Sachet", mrp: 2, price: 2, cat: "Baby & Care", icon: "🧴", save: "₹2" },
+      { id: 39, name: "Dove Shampoo Strip", unit: "Pack of 30 Sachets", mrp: 60, price: 60, cat: "Baby & Care", icon: "🧴", save: "Full Strip" },
+      { id: 40, name: "Clinic Plus Shampoo Strip", unit: "Pack of 30 Sachets", mrp: 30, price: 30, cat: "Baby & Care", icon: "🧴", save: "Full Strip" },
+      { id: 41, name: "TRESemme Shampoo Strip", unit: "Pack of 30 Sachets", mrp: 60, price: 60, cat: "Baby & Care", icon: "🧴", save: "Full Strip" },
+      { id: 42, name: "Apsara Extra Dark Pencils", unit: "Pack of 10 Pencils", mrp: 70, price: 60, cat: "Baby & Care", icon: "✏️", save: "₹10" },
+      { id: 43, name: "Ford Ball Pen Box", unit: "Pack of 40 Pens", mrp: 240, price: 200, cat: "Baby & Care", icon: "🖊️", save: "₹40" },
 
-</div>
+      // Biscuits & Drinks
+      { id: 44, name: "Parle-G Box", unit: "24 Packs x ₹5", mrp: 120, price: 120, cat: "Snacks", icon: "🍪", save: "Wholesale" },
+      { id: 45, name: "Britannia Bourbon Box", unit: "20 Packs x ₹10", mrp: 200, price: 200, cat: "Snacks", icon: "🍪", save: "Wholesale" },
+      { id: 46, name: "Parle Hide & Seek Box", unit: "20 Packs x ₹10", mrp: 200, price: 200, cat: "Snacks", icon: "🍪", save: "Wholesale" },
+      { id: 47, name: "Packaged Water", unit: "1 L Bottle", mrp: 20, price: 20, cat: "Snacks", icon: "💧", save: "Chilled" },
+      { id: 48, name: "Thums Up", unit: "1 L Bottle", mrp: 55, price: 50, cat: "Snacks", icon: "🥤", save: "₹5" },
+      { id: 49, name: "Frooti Box", unit: "40 Pcs Pack", mrp: 400, price: 400, cat: "Snacks", icon: "🧃", save: "₹400 Box" }
+    ];
 
-<footer>
-    <p>© 2026 BijLa Pradip Grocery</p>
-    <p>Topsia, Kolkata</p>
-</footer>
+    let cart = {}; // { productId: quantity }
 
-</body>
-</html>
+    function renderProducts(items) {
+      const grid = document.getElementById("productGrid");
+      grid.innerHTML = "";
+      items.forEach(prod => {
+        const qty = cart[prod.id] || 0;
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          <div class="badge-save">${prod.save}</div>
+          <div class="prod-icon">${prod.icon}</div>
+direct WhatsApp link 7439117627
